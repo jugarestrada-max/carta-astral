@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Carta Astral – Yo Soy Cosmos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      opacity: 0.9;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ffcc00;
+    }
+    #resultado {
+      margin-top: 30px;
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🌌 Carta Astral Personal</h1>
+    <p>Descubre tu mapa cósmico con astrología occidental y védica</p>
+
+    <label>Nombre completo</label>
+    <input type="text" id="nombre" placeholder="Ej. Gabriel Estrada" />
+
+    <label>Fecha de nacimiento</label>
+    <input type="date" id="fecha" />
+
+    <label>Hora de nacimiento</label>
+    <input type="time" id="hora" />
+
+    <label>Lugar de nacimiento (Ciudad, País)</label>
+    <input type="text" id="lugar" placeholder="Ej. Ciudad de México, México" />
+
+    <button onclick="generarCarta()">Generar mi carta astral</button>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    async function generarCarta() {
+      const nombre = document.getElementById("nombre").value;
+      const fecha = document.getElementById("fecha").value;
+      const hora = document.getElementById("hora").value;
+      const lugar = document.getElementById("lugar").value;
+
+      if (!nombre || !fecha || !hora || !lugar) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+
+      document.getElementById("resultado").innerText =
+        "🔮 Calculando tu carta astral, por favor espera...";
+
+      try {
+        const response = await fetch("/.netlify/functions/carta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nombre, fecha, hora, lugar })
+        });
+
+        const data = await response.json();
+        document.getElementById("resultado").innerText =
+          JSON.stringify(data, null, 2);
+      } catch (error) {
+        document.getElementById("resultado").innerText =
+          "❌ Error al conectar con el servidor.";
+      }
+    }
+  </script>
+</body>
+</html>
